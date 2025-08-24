@@ -19,6 +19,11 @@ jobs:
       - name: Clone repository manually
         run:  git clone https://github.com/${{ github.repository }} .
 
+      - name: Check git clone 
+        run: |
+          cd TryCI-CD_Github_Actions
+          ls -la
+      
       - name: Install dependencies
         run: npm install
         
