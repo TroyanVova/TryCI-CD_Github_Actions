@@ -1,1 +1,31 @@
+name: CI Pipeline
 
+on: 
+  push:           
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest   
+
+    steps:
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install Git
+        run: sudo apt-get install -y git   
+
+      - name: Clone repository manually
+        run: |
+          git clone https://github.com/${{ github.repository }} .
+          git checkout ${{ github.sha }}
+
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Create a project build
+        run: npm run build
+
+      - name: Run tests
+        run: npm test
