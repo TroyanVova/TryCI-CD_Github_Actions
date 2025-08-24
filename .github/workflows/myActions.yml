@@ -13,16 +13,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-      - name: Install Git
-        run: sudo apt-get install -y git   
 
-      - name: Clone repository manually
-        run:  git clone https://github.com/${{ github.repository }} .
-
-      - name: Check git clone 
-        run: |
-          cd TryCI-CD_Github_Actions
-          ls -la
+      - name: Checkout repo
+        uses: actions/checkout@v3
       
       - name: Install dependencies
         run: npm install
