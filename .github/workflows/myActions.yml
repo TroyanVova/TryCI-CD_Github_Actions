@@ -17,9 +17,7 @@ jobs:
         run: sudo apt-get install -y git   
 
       - name: Clone repository manually
-        run: |
-          git clone https://github.com/${{ github.repository }} .
-          git checkout ${{ github.sha }}
+        run:  git clone https://github.com/${{ github.repository }}
 
       - name: Install dependencies
         run: npm install
