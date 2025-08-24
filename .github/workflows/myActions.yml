@@ -8,20 +8,20 @@ jobs:
     runs-on: ubuntu-latest   
 
     steps:
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Install the software
+        uses: actions/setup-java@v3
         with:
-          node-version: '18'
-
-      - name: Clone repository
+          java-version: '17'
+          distribution: 'temurin'
+          
+      - name: Clone the project
         uses: actions/checkout@v3
-      
-      - name: Install dependencies
-        run: npm install
-        
-      - name: Create a project build
-        run: npm run build
+
+      - name: Download dependencies
+        run: mvn dependency:resolve
+
+      - name: Build project
+        run: mvn package
 
       - name: Run tests
-        run: npm test
+        run: mvn test
