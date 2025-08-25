@@ -9,13 +9,16 @@ jobs:
 
     steps:
       - name: Install the software
-        uses: actions/setup-java@v3
-        with:
-          java-version: '17'
-          distribution: 'temurin'
+        run: sudo apt-get install openjdk-17-jdk
+
+        #uses: actions/setup-java@v3
+        #with:
+        #  java-version: '17'
+        #  distribution: 'temurin'
           
       - name: Clone the project
-        uses: actions/checkout@v3
+        run: git clone https://github.com/${{ github.repository }} . 
+        #uses: actions/checkout@v3
 
       - name: Download dependencies
         run: mvn dependency:resolve
