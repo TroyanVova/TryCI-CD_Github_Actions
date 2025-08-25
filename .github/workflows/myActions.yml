@@ -1,30 +1,72 @@
+# -----------------------------------------------------------------------------
+# GitHub Actions Workflow for a Maven Project
+#
+# This workflow is designed to automatically build and test a Java project
+# that uses Maven. It can be triggered by a 'push' event to the repository
+# or manually via 'workflow_dispatch'.
+# -----------------------------------------------------------------------------
+
+# The name of your workflow. This name will appear in the "Actions" tab of your repository.
 name: myActions
 
-on: 
-  push:           
+# This section defines the events that trigger the workflow.
+on:
+  # The workflow runs automatically whenever a 'push' event occurs on any branch.
+  push:
+  # The 'workflow_dispatch' event allows you to run this workflow manually from the GitHub UI.
   workflow_dispatch:
+
+# A workflow is composed of one or more 'jobs'. This defines a single job named 'build'.
 jobs:
   build:
-    runs-on: ubuntu-latest   
+    # This specifies the type of runner (virtual machine) to run the job on.
+    # 'ubuntu-latest' is a GitHub-hosted runner with the latest Ubuntu version.
+    runs-on: ubuntu-latest
 
+    # The 'steps' section contains a sequence of tasks that will be executed for this job.
     steps:
+      # Step 1: Install a specific version of the JDK
       - name: Install the software
+        # The 'run' command executes a shell command on the runner.
+        # This installs OpenJDK 17 using the apt package manager.
+        # This approach is suitable, but using a pre-configured action is generally more reliable and recommended.
         run: sudo apt-get install openjdk-17-jdk
 
-        #uses: actions/setup-java@v3
-        #with:
-        #  java-version: '17'
-        #  distribution: 'temurin'
+        # The commented-out 'actions/setup-java@v3' block shows a better practice.
+        # This action is specifically designed to set up a Java environment and is more robust.
+        # It handles different distributions and versions more reliably than a simple 'apt-get' command.
+        # uses: actions/setup-java@v3
+        # with:
+        #   java-version: '17'
+        #   distribution: 'temurin'
           
+      # Step 2: Clone the project repository
       - name: Clone the project
-        run: git clone https://github.com/${{ github.repository }} . 
-        #uses: actions/checkout@v3
+        # This command clones the repository into the runner's workspace directory.
+        # The ${{ github.repository }} variable is a context variable that automatically provides the repository name.
+        # The '.' at the end means it clones into the current directory.
+        run: git clone https://github.com/${{ github.repository }} .
+        
+        # The commented-out 'actions/checkout@v3' action is the standard and recommended way to clone the repository.
+        # It's specifically optimized for GitHub Actions and handles things like authentication and LFS files automatically.
+        # It is generally preferred over a manual 'git clone' command.
+        # uses: actions/checkout@v3
 
+      # Step 3: Download project dependencies
       - name: Download dependencies
+        # This command uses Maven to resolve and download all the dependencies listed in the project's pom.xml file.
+        # This ensures that all required libraries are available before building the project.
         run: mvn dependency:resolve
 
+      # Step 4: Build the project
       - name: Build project
+        # This command runs the 'package' phase of Maven.
+        # This will compile the source code, run any unit tests, and package the compiled code into a distributable format (e.g., a .jar or .war file).
         run: mvn package
 
+      # Step 5: Run tests
       - name: Run tests
+        # This command explicitly runs the 'test' phase of Maven.
+        # It's a good practice to separate this from the build step for better clarity and debugging.
+        # Note: The 'mvn package' command already runs tests by default, so this step might be redundant unless you have specific testing needs.
         run: mvn test
